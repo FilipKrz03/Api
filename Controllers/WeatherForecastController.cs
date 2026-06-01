@@ -10,6 +10,15 @@ namespace Api.Controllers
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
+        
+        private static readonly Dictionary<string, double> CityTemperatures = new()
+        {
+            ["Warsaw"] = 21.5,
+            ["Krakow"] = 19.0,
+            ["Gdansk"] = 17.3,
+            ["Wroclaw"] = 20.1,
+            ["Poznan"] = 18.7
+        };
 
         private readonly ILogger<WeatherForecastController> _logger;
 
@@ -28,6 +37,12 @@ namespace Api.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("city/{cityName}")]
+        public double GetWeatherByCity(string cityName)
+        {
+            return CityTemperatures[cityName];
         }
     }
 }
