@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# Logs
+*.log
+logs/
+secrets.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
