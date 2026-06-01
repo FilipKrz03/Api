@@ -11,7 +11,7 @@ namespace Api.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
         
-        private static readonly Dictionary<string, double> CityTemperatures = new()
+        private static readonly Dictionary<string, double> CityTemperatures = new(StringComparer.OrdinalIgnoreCase)
         {
             ["Warsaw"] = 21.5,
             ["Krakow"] = 19.0,
@@ -40,9 +40,22 @@ namespace Api.Controllers
         }
 
         [HttpGet("city/{cityName}")]
-        public double GetWeatherByCity(string cityName)
+        public ActionResult<double> GetWeatherByCity(string cityName)
         {
-            return CityTemperatures[cityName];
+            if (string.IsNullOrWhiteSpace(cityName))
+            {
+                return BadRequest("City name is required.");
+            }
+
+            var normalizedCityName = cityName.Trim();
+
+            if (!CityTemperatures.TryGetValue(normalizedCityName, out var temperature))
+            {
+                _logger.LogWarning("Weather lookup failed for unknown city: {CityName}", normalizedCityName);
+                return NotFound($"City '{cityName}' was not found.");
+            }
+
+            return Ok(temperature);
         }
     }
 }
