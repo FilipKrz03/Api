@@ -40,9 +40,21 @@ namespace Api.Controllers
         }
 
         [HttpGet("city/{cityName}")]
-        public double GetWeatherByCity(string cityName)
+        public ActionResult<double> GetWeatherByCity(string cityName)
         {
-            return CityTemperatures[cityName];
+            if (string.IsNullOrWhiteSpace(cityName))
+            {
+                return BadRequest("City name is required.");
+            }
+
+            var normalizedCityName = cityName.Trim();
+
+            if (!CityTemperatures.TryGetValue(normalizedCityName, out var temperature))
+            {
+                return NotFound($"Weather data for city '{normalizedCityName}' was not found.");
+            }
+
+            return Ok(temperature);
         }
     }
 }
